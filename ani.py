@@ -29,7 +29,7 @@ def anigauss(inarr, sigv, sigu, phi=0., derv=0, deru=0):
     outarr = np.zeros_like(inarr, dtype=np.double)
 
     # size parameters for array
-    (sizex, sizey) = inarr.shape
+    (sizey, sizex) = inarr.shape
 
     # call external function
     aglib.anigauss(inarr.ctypes.data_as(C.POINTER(C.c_double)),
