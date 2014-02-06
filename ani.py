@@ -12,10 +12,12 @@ import ctypes as C
 aglib = C.cdll.LoadLibrary("./anigauss.so")
 
 # inarr: input array
+# x-axis = inner index (most rapidly varying index)
+# y-axis = outer index
 # v-axis = short axis
-# u-aixs = long axis
+# u-aixs = long axis, from which phi is defined
 # (sigv, sigu) = sigmas for Gaussian filter
-# phi = orientation angle in degrees (from x)
+# phi = orientation angle in degrees (from u to x)
 # (derv, deru) = for line and edge detection (default zero)
 def anigauss(inarr, sigv, sigu, phi=0., derv=0, deru=0):
     
@@ -44,14 +46,14 @@ def anigauss(inarr, sigv, sigu, phi=0., derv=0, deru=0):
 def circletest():
     import matplotlib.pyplot as plt
     cm = plt.get_cmap('binary')
-    kw = {'cmap':cm, 'interpolation':'none'}
+    kw = {'cmap':cm, 'interpolation':'none', 'origin':'upper'}
 
-    (xx, yy) = np.mgrid[0:101, 0:101] - 50.
+    (yy, xx) = np.mgrid[-50:61,-50:51]
     r = np.sqrt(xx**2 + yy**2)
-    zz = np.exp(-(r - 36.)**2/8.)
-    zz = np.maximum(zz, np.exp(-(xx+yy + 80.)**2/8.))
-    zz = np.maximum(zz, 0.5 * ((xx**2 + yy**2) < 20**2))
-    zz += np.random.randn(*zz.shape)
+    zz = np.exp(-(r - 36.)**2/8.) # hollow circle
+    zz = np.maximum(zz, np.exp(-(xx+yy - 80.)**2/8.)) # line at x+y=80
+    zz = np.maximum(zz, 0.5 * ((xx**2 + yy**2) < 20**2)) # filled circle
+    zz += np.random.randn(*zz.shape) # noise
     plt.subplot(2, 3, 1)
     plt.imshow(zz, **kw)
     plt.title('original')
@@ -80,8 +82,9 @@ def circletest():
         zzds.append(-zzd)
 
     plt.subplot(2, 3, 4)
-    plt.imshow(zzfs[4], **kw)
-    plt.title(u'anisotropic gaussian %d\u00b0' % angles[4])
+    ishow = 4
+    plt.imshow(zzfs[ishow], **kw)
+    plt.title(u'anisotropic gaussian %d\u00b0' % angles[ishow])
 
     plt.subplot(2, 3, 5)
     plt.imshow(np.max(np.array(zzfs), axis=0), **kw)
