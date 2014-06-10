@@ -5,6 +5,7 @@
 # Lindy L Blackburn (lindylam@gmail.com)
 # Jun 10, 2014
 
+import os
 import numpy as np
 import ctypes as C
 
