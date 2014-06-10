@@ -3,15 +3,15 @@
 # compile original C function as: gcc -fPIC -shared -o anigauss.so anigauss.c
 #
 # Lindy L Blackburn (lindylam@gmail.com)
-# Jan 29, 2014
+# Jun 10, 2014
 
 import numpy as np
 import ctypes as C
 
 # load in external library
-aglib = C.cdll.LoadLibrary("./anigauss.so")
+aglib = C.cdll.LoadLibrary(os.path.join(os.path.dirname(__file__), "anigauss.so"))
 
-# inarr: input array
+# inarr = input array
 # x-axis = inner index (most rapidly varying index)
 # y-axis = outer index
 # v-axis = short axis
